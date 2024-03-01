@@ -1,5 +1,11 @@
 package main
 
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
 type car struct {
 	Id    int     `json:"id"`
 	Model string  `json:"model"`
@@ -32,4 +38,16 @@ var cars = []car{
 		Model: "Elantra",
 		Price: 118560.5,
 	},
+}
+
+func main() {
+	router := gin.Default()
+
+	router.GET("/cars", getCars)
+
+	router.Run("localhost:8080")
+}
+
+func getCars(request *gin.Context) {
+	request.IndentedJSON(http.StatusOK, cars)
 }
