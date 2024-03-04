@@ -13,6 +13,11 @@ type car struct {
 	Price float64 `json:"price"`
 }
 
+type response struct {
+	Ok      bool   `json:"ok"`
+	Message string `json:"message"`
+}
+
 var cars = []car{
 	{
 		Id:    1,
@@ -44,10 +49,27 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/cars", getCars)
+	router.POST("/cars", postCars)
 
 	router.Run(":8080")
 }
 
 func getCars(request *gin.Context) {
 	request.IndentedJSON(http.StatusOK, cars)
+}
+
+func postCars(request *gin.Context) {
+	var newCar car
+	requestError := request.BindJSON(&newCar)
+
+	if requestError != nil {
+		request.IndentedJSON(http.StatusBadRequest, response{
+			Ok:      false,
+			Message: "Formato dos dados enviados é inválido",
+		})
+
+		return
+	}
+
+	request.IndentedJSON(http.StatusOK, newCar)
 }
