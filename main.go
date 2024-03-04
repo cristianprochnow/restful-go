@@ -45,7 +45,7 @@ func main() {
 
 	router.GET("/cars", getCars)
 
-	router.Run("localhost:8080")
+	router.Run(":8080")
 }
 
 func getCars(request *gin.Context) {
