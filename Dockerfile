@@ -3,4 +3,4 @@ WORKDIR /app
 EXPOSE 8080
 COPY go.mod go.sum .
 RUN go get .
-COPY .
+COPY . .
