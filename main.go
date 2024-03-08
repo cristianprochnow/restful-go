@@ -71,5 +71,31 @@ func postCars(request *gin.Context) {
 		return
 	}
 
-	request.IndentedJSON(http.StatusOK, newCar)
+	insertedCar := insertCar(newCar)
+
+	request.IndentedJSON(http.StatusOK, insertedCar)
+}
+
+func insertCar(data car) car {
+	newId := getLastId() + 1
+
+	data.Id = newId
+	cars = append(cars, data)
+
+	return data
+}
+
+func getLastId() int {
+	lastCar := getLastCar()
+	lastId := lastCar.Id
+
+	if lastId == 0 {
+		lastId = 1
+	}
+
+	return lastId
+}
+
+func getLastCar() car {
+	return cars[len(cars)-1]
 }
