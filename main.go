@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type car struct {
@@ -63,10 +63,13 @@ func postCars(request *gin.Context) {
 	requestError := request.BindJSON(&newCar)
 
 	if requestError != nil {
-		request.IndentedJSON(http.StatusBadRequest, response{
-			Ok:      false,
-			Message: "Formato dos dados enviados é inválido",
-		})
+		error(request, "É obrigatório o envio em formato JSON.")
+
+		return
+	}
+
+	if !isValidCar(newCar) {
+		error(request, "Formato de JSON inválido.")
 
 		return
 	}
@@ -76,6 +79,10 @@ func postCars(request *gin.Context) {
 	request.IndentedJSON(http.StatusOK, insertedCar)
 }
 
+func isValidCar(dataSent any) bool {
+	return fmt.Sprintf("%T", dataSent) == "car"
+}
+
 func insertCar(data car) car {
 	newId := getLastId() + 1
 
@@ -83,6 +90,13 @@ func insertCar(data car) car {
 	cars = append(cars, data)
 
 	return data
+}
+
+func error(request *gin.Context, message string) {
+	request.IndentedJSON(http.StatusBadRequest, response{
+		Ok:      false,
+		Message: message,
+	})
 }
 
 func getLastId() int {
