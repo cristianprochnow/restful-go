@@ -6,13 +6,6 @@ import (
 	"net/http"
 )
 
-type car struct {
-	Id    int     `json:"id"`
-	Model string  `json:"model"`
-	Brand string  `json:"brand"`
-	Price float64 `json:"price"`
-}
-
 type response struct {
 	Ok      bool   `json:"ok"`
 	Message string `json:"message"`

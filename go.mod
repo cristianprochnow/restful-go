@@ -1,4 +1,4 @@
-module go/restful-api
+module restful-go
 
 go 1.21.7
 
