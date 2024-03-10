@@ -1,6 +1,8 @@
 # RESTful
 🐰 REST Api sample made with Golang.
 
+[![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=RESTful%20Go&uri=https%3A%2F%2Fgithub.com%2Fcristianprochnow%2Frestful-go%2Fblob%2Fmain%2Finsomnia.json)
+
 # Routes
 
 ## `/cars` GET
