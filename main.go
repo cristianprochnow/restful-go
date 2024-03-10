@@ -52,8 +52,30 @@ func main() {
 	router.GET("/cars", getCars)
 	router.POST("/cars", postCars)
 	router.PUT("/cars/:id", updateCars)
+	router.DELETE("/cars/:id", deleteCars)
 
 	router.Run(":8080")
+}
+
+func deleteCars(request *gin.Context) {
+	carId := toInt(request.Param("id"))
+
+	if carId == 0 {
+		error(request, "ID do carro em formato inválido ou não enviado.")
+
+		return
+	}
+
+	removedCar := removeCar(carId)
+
+	if removedCar.Id == 0 {
+		error(request,
+			fmt.Sprint("Carro não encontrado com o ID ", carId))
+
+		return
+	}
+
+	request.IndentedJSON(http.StatusOK, removedCar)
 }
 
 func getCars(request *gin.Context) {
@@ -152,6 +174,25 @@ func refreshCar(carId int, dataSent car) car {
 	for index, item := range cars {
 		if item.Id == carId {
 			cars[index] = carItem
+		}
+	}
+
+	return carItem
+}
+
+func removeCar(carId int) car {
+	newCarsList := listCars()
+	carItem := searchCar(carId)
+
+	if carItem.Id == 0 {
+		return carItem
+	}
+
+	cars = nil
+
+	for _, item := range newCarsList {
+		if item.Id != carId {
+			cars = append(cars, item)
 		}
 	}
 

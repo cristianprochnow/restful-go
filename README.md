@@ -71,7 +71,7 @@
 }
 ```
 
-## `/cars` PUT
+## `/cars/:id` PUT
 
 ### Body
 
@@ -91,5 +91,18 @@
 	"model": "Corola",
 	"brand": "Toyota",
 	"price": 100000.67
+}
+```
+
+## `/cars/:id` DELETE
+
+### Response
+
+```json
+{
+	"id": 2,
+	"model": "Corola",
+	"brand": "Toyota",
+	"price": 145000.8
 }
 ```
