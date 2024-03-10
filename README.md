@@ -48,6 +48,19 @@
 ]
 ```
 
+## `/cars/:id` GET
+
+### Response
+
+```json
+{
+	"id": 3,
+	"model": "Cerato",
+	"brand": "Kia",
+	"price": 123500.5
+}
+```
+
 ## `/cars` POST
 
 ### Body

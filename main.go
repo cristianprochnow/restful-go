@@ -50,6 +50,7 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/cars", getCars)
+	router.GET("/cars/:id", showCars)
 	router.POST("/cars", postCars)
 	router.PUT("/cars/:id", updateCars)
 	router.DELETE("/cars/:id", deleteCars)
@@ -76,6 +77,27 @@ func deleteCars(request *gin.Context) {
 	}
 
 	request.IndentedJSON(http.StatusOK, removedCar)
+}
+
+func showCars(request *gin.Context) {
+	carId := toInt(request.Param("id"))
+
+	if carId == 0 {
+		error(request, "ID do carro em formato inválido ou não enviado.")
+
+		return
+	}
+
+	carById := searchCar(carId)
+
+	if carById.Id == 0 {
+		error(request,
+			fmt.Sprint("Carro não encontrado com o ID ", carId))
+
+		return
+	}
+
+	request.IndentedJSON(http.StatusOK, carById)
 }
 
 func getCars(request *gin.Context) {
