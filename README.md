@@ -70,3 +70,26 @@
 	"price": 100000.67
 }
 ```
+
+## `/cars` PUT
+
+### Body
+
+```json
+{
+	"price": 100000.67,
+	"model": "Corola",
+	"brand": "Toyota"
+}
+```
+
+### Response
+
+```json
+{
+	"id": 2,
+	"model": "Corola",
+	"brand": "Toyota",
+	"price": 100000.67
+}
+```

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type car struct {
@@ -49,12 +51,13 @@ func main() {
 
 	router.GET("/cars", getCars)
 	router.POST("/cars", postCars)
+	router.PUT("/cars/:id", updateCars)
 
 	router.Run(":8080")
 }
 
 func getCars(request *gin.Context) {
-	request.IndentedJSON(http.StatusOK, cars)
+	request.IndentedJSON(http.StatusOK, listCars())
 }
 
 func postCars(request *gin.Context) {
@@ -78,6 +81,55 @@ func postCars(request *gin.Context) {
 	request.IndentedJSON(http.StatusOK, insertedCar)
 }
 
+func updateCars(request *gin.Context) {
+	var updateCar car
+	requestError := request.BindJSON(&updateCar)
+	carId := toInt(request.Param("id"))
+
+	if carId == 0 {
+		error(request, "ID do carro em formato inválido ou não enviado.")
+
+		return
+	}
+
+	if requestError != nil {
+		error(request, "Formato inválido de JSON enviado.")
+
+		return
+	}
+
+	if !isValidCar(updateCar) {
+		error(request, "JSON enviado com dados obrigatórios faltando.")
+
+		return
+	}
+
+	updatedCar := refreshCar(carId, updateCar)
+
+	if updatedCar.Id == 0 {
+		error(request,
+			fmt.Sprint("Carro não encontrado com o ID ", carId))
+
+		return
+	}
+
+	request.IndentedJSON(http.StatusOK, updatedCar)
+}
+
+func toInt(text string) int {
+	value, error := strconv.Atoi(text)
+
+	if error != nil {
+		value = 0
+	}
+
+	return value
+}
+
+func listCars() []car {
+	return cars
+}
+
 func isValidCar(dataSent car) bool {
 	isValid := true
 
@@ -88,6 +140,36 @@ func isValidCar(dataSent car) bool {
 	}
 
 	return isValid
+}
+
+func refreshCar(carId int, dataSent car) car {
+	carItem := searchCar(carId)
+
+	carItem.Model = dataSent.Model
+	carItem.Brand = dataSent.Brand
+	carItem.Price = dataSent.Price
+
+	for index, item := range cars {
+		if item.Id == carId {
+			cars[index] = carItem
+		}
+	}
+
+	return carItem
+}
+
+func searchCar(carId int) car {
+	var carItem car
+
+	for _, item := range listCars() {
+		if item.Id == carId {
+			carItem = item
+
+			break
+		}
+	}
+
+	return carItem
 }
 
 func insertCar(data car) car {
